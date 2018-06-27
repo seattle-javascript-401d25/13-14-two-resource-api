@@ -26,4 +26,4 @@ carMakeSchema.pre('findOne', function preHookCallback(done) {
 });
 
 const skipInit = process.env.NODE_ENV === 'development';
-export default mongoose.model('carMakes', carMakeSchema, 'carMakes', skipInit);
+export default mongoose.model('carMake', carMakeSchema, 'carMake', skipInit);

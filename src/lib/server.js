@@ -11,7 +11,7 @@ import loggerMiddleware from '../lib/middleware/logger-middleware';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const server = null;
+let server = null;
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +20,7 @@ app.use(loggerMiddleware);
 app.use(carMakeRouter);
 app.use(modelRouter);
 app.use(errorMiddleware);
+
 app.all('*', (req, res) => {
   console.log('RETURNING 404 FROM THE CATCH ALL');
   return res.sendStatus(404).send('Route Not Registered');
@@ -28,7 +29,7 @@ app.all('*', (req, res) => {
 const startServer = () => {
   return mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
-      server.app.listen(PORT, () => {
+      server = app.listen(PORT, () => {
         console.log('Server is ON:', PORT);
       });
     })

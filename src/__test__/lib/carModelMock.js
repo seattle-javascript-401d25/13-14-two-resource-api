@@ -1,8 +1,8 @@
 'use strict';
 
 import faker from 'faker';
-import pCarMakeMock from '../../model/carMake';
 import CarModel from '../../model/carModel';
+import pCarMakeMock from './carMakeMock';
 
 export default () => {
   const mockData = {};

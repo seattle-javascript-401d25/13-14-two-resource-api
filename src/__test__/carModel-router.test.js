@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 describe('POST /api/models', () => {
-  test('200 POST for sucessful posting of a model', () => {
+  test('200 POST for successful posting of a model', () => {
     return pCreateMockData()
       .then((mockData) => {
         const mockModel = {

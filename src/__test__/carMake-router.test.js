@@ -6,13 +6,13 @@ import { startServer, stopServer } from '../lib/server';
 import CarMake from '../model/carMake';
 import pCreateMockMake from './lib/carMakeMock';
 
-const apiUrl = `http://localhost:${process.env.PORT}/api/makes`;
+const apiUrl = `http://localhost:${process.env.PORT}/api/make`;
 
 beforeAll(startServer);
 afterAll(stopServer);
 afterEach(() => CarMake.remove({}));
 
-describe('POST /api/makes', () => {
+describe('POST /api/make', () => {
   const mockResource = {
     name: faker.name.firstName(),
     country: faker.address.country(),
@@ -33,7 +33,7 @@ describe('POST /api/makes', () => {
   });
 });
 
-describe('GET /api/makes', () => {
+describe('GET /api/make', () => {
   test('200 GET for successful fetching of a car make', () => {
     let returnedCarMake;
     return pCreateMockMake()

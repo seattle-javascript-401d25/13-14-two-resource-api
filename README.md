@@ -23,10 +23,10 @@
 #### Feature Tasks
 * create an HTTP Server using `express`
 * utilize all the new dependencies used in lecture
-* **Lab 13**: create a resource **model** of your choice (that is different from the lecture models) that uses `mongoose.Schema` and `mongoose.model`. This model should be something that would make sense as the *one* in your *one-to-many* data relationship, and will be considered a  *document* in the Mongo database. E.g., in lecture code, one classroom can have many students. 
+* **Lab 13**: create a resource model of your choice (that is different from the lecture models) that uses `mongoose.Schema` and `mongoose.model`. This model should be something that would make sense as the *one* in your *one-to-many* data relationship, and will be considered a  *document* in the Mongo database. E.g., in lecture code, one classroom can have many students. 
 * use the express `Router` to create a route for doing **RESTFUL CRUD** operations against your _model_
 
-* **Lab 14**: create a resource **model** of your choice that makes sense as the *many* in your *one-to-many* data relationship. This will be considered a *subdocument* in the Mongo database.  
+* **Lab 14**: create a resource model of your choice that makes sense as the *many* in your *one-to-many* data relationship. This will be considered a *subdocument* in the Mongo database.  
 
 ## Server Endpoints *this applies to BOTH of your models*
 ### `/api/resource-name`

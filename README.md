@@ -55,7 +55,7 @@
  * `POST` - test 200, returns a resource for requests made with a valid body
  
  ### Stretch Goals
- * Test your DELETE route for all error conditions
+ * Test your DELETE route for all success and error conditions
  * Test to ensure that if you remove a subdocument from your database, i.e. the *many* in your *one-to-many* data relationship, you have properly removed it from its parent document's array.
  * Try to implement a many-to-many relationship between your models or with a third model and test that code
  * If you use an `enum` property on your Mongoose schema, test for errors when trying to enter a value that isn't permitted on the schema

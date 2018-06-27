@@ -37,4 +37,21 @@ bookRouter.get('/api/read/book/:id?', (request, response, next) => {
   return undefined;
 });
 
+bookRouter.put('/api/read/book/:id?', (request, response, next) => {
+  if (!request.params.id) {
+    return next(new HttpErrors(400, 'Did not enter and ID'));
+  }
+
+  Book.init()
+    .then(() => {
+      return Book.findOneAndUpdate({ _id: request.body._id }, request.body);
+    })
+    .then((foundBook) => {
+      logger.log(logger.INFO, `BOOK ROUTER: AFTER UPDATING BOOK ${JSON.stringify(foundBook)}`);
+      return response.json(foundBook);
+    })
+    .catch(next);
+  return undefined;
+});
+
 export default bookRouter;

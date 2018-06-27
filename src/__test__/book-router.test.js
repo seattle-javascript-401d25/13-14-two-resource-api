@@ -60,3 +60,26 @@ describe('GET /api/read/book/:id', () => {
       });
   });
 });
+
+describe('PUT /api/read/book/:id', () => {
+  test('200 PUT for succesful updating of existing book', () => {
+    let newBook;
+    return createMockDataPromise()
+      .then((mockData) => {
+        newBook = mockData.book;
+        newBook.title = 'This title has been updated';
+        return superagent.put(`${apiUrl}/${newBook._id}`)
+          .send(newBook);
+      })
+      .then((result) => {
+        expect(result.status).toEqual(200);
+        return Book.findById(newBook._id);
+      })
+      .then((result) => {
+        expect(result.title).toEqual(newBook.title);
+      })
+      .catch((err) => {
+        throw err;
+      });
+  });
+});

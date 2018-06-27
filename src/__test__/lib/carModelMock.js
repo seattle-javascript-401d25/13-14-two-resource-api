@@ -13,7 +13,7 @@ export default () => {
     .then(() => {
       const mockCarModel = {
         name: faker.name.firstName(),
-        vin: faker.random.number(),
+        vin: faker.random.number(100000000, 999999999),
         carMakeId: mockData.carMake._id,
       };
       return new CarModel(mockCarModel).save();

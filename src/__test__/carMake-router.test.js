@@ -31,20 +31,14 @@ describe('POST /api/make', () => {
         throw err;
       });
   });
-  // test('400 post: No name', () => {
-  //   return pCreateMockMake()
-  //     .then(() => {
-  //       const mockCarMake = {
-  //         // name: faker.name.firstName(),
-  //         country: faker.address.country(),
-  //       };
-  //       return superagent.post(apiUrl)
-  //         .send(mockCarMake)
-  //         .catch((err) => {
-  //           expect(err.status).toEqual(400);
-  //         });
-  //     });
-  // });
+  test('400 post: No name', () => {
+    return superagent.post(apiUrl)
+      .send()
+      .catch((err) => {
+        console.log('INSIDE 400 ERROR FOR NO ID');
+        expect(err.status).toEqual(400);
+      });
+  });
 });
 
 describe('GET /api/make', () => {
@@ -66,7 +60,7 @@ describe('GET /api/make', () => {
   });
 });
 
-describe('PUT request to /api/cars', () => {
+describe('PUT request to /api/make', () => {
   test('200 PUT for successful update to a resource', () => {
     return pCreateMockMake()
       .then((newCarMake) => {

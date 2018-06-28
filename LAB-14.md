@@ -26,8 +26,7 @@ Continue your work from Lab 13. Refactor your app to utilize the new `modelFinde
 * Write at least two 409 tests for your routes that would be appropriate for this error. This may mean you will have to put a `unique` flag on one of your schema properties if you haven't done that already in Lab 13. 
 
 ## Stretch Goals
-* Find and utilize a well-tested npm module that can accomplish the same exact thing that our custom `modelFinder` middleware does
-* Find other ways to make your code DRY.
+* Find and utilize a well-tested and widely-used npm module that can accomplish the same thing our custom `modelFinder` middleware does
 * Research the new [ES7 async/await functionality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function), and figure out how you can utilize `async/await` in your test modules in place of Promises. [Jest docs can get you started.](http://jestjs.io/docs/en/tutorial-async.html#async-await)
 
 ## Documentation

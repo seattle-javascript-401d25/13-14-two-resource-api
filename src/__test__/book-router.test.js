@@ -102,7 +102,7 @@ describe('PUT /api/read/book/:id', () => {
 describe('DELETE /api/read/book/:id', () => {
   let newBook;
 
-  test('200 (?) DELETE for succesfully deleting a book', () => {
+  test('200 DELETE for succesfully deleting a book', () => {
     return createMockDataPromise()
       .then((mockData) => {
         newBook = mockData.book;
@@ -110,11 +110,15 @@ describe('DELETE /api/read/book/:id', () => {
       })
       .then((result) => {
         expect(result.status).toEqual(200);
+        return Book.findById(newBook._id);
+      })
+      .then((result) => {
+        expect(result).toBeNull();
       });
   });
 
   test('404 DELETE for try to delete nonexistant book', () => {
-    return superagent.delete(`${apiUrl}/${newBook._id}`)
+    return superagent.delete(`${apiUrl}/12345`)
       .then((result) => {
         throw result; // shouldn't get here
       })

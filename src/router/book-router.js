@@ -65,7 +65,7 @@ bookRouter.delete('/api/read/book/:id?', (request, response, next) => {
     })
     .then((book) => {
       if (!book) { // findBy return null --> book not found 
-        next(new HttpErrors(404, 'Attempt to delete non-existant book'));
+        return next(new HttpErrors(404, 'Attempt to delete non-existant book'));
       }
       return book.remove();
     })

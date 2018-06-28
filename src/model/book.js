@@ -36,5 +36,12 @@ bookSchema.post('remove', (book) => {
     });
 });
 
+bookSchema.post('save', (book) => {
+  Author.findById(book.author)
+    .then((author) => {
+      author.authored.push(book._id);
+    });
+});
+
 const skipInit = process.env.NODE_ENV === 'development';
 export default mongoose.model('books', bookSchema, 'books', skipInit);

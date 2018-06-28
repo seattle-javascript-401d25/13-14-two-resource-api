@@ -15,7 +15,7 @@ bookRouter.post('/api/read/book', (request, response, next) => {
     })
     .then((newBook) => {
       logger.log(logger.INFO, `BOOK ROUTER: POST AFTER SAVE: ${JSON.stringify(newBook)}`);
-      response.json(newBook);
+      response.status(201).json(newBook);
     })
     .catch(next);
 });
@@ -54,4 +54,25 @@ bookRouter.put('/api/read/book/:id?', (request, response, next) => {
   return undefined;
 });
 
+bookRouter.delete('/api/read/book/:id?', (request, response, next) => {
+  if (!request.params.id) {
+    return next(new HttpErrors(400, 'Did not enter and ID'));
+  }
+
+  Book.init()
+    .then(() => {
+      return Book.findById(request.params.id);
+    })
+    .then((book) => {
+      if (!book) { // findBy return null --> book not found 
+        next(new HttpErrors(404, 'Attempt to delete non-existant book'));
+      }
+      return book.remove();
+    })
+    .then(() => {
+      return response.sendStatus(200);
+    })
+    .catch(next);
+  return undefined;
+});
 export default bookRouter;

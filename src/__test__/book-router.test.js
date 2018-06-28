@@ -11,15 +11,16 @@ const apiUrl = `http://localhost:${process.env.PORT}/api/read/book`;
 
 beforeAll(startServer);
 afterAll(stopServer);
-afterEach(() => {
-  Promise.all([
-    Book.remove(),
-    Author.remove(),
-  ]);
-});
 
 describe('POST /api/read/book', () => {
-  test('200 POST for succcesful posting of a book', () => {
+  beforeEach(() => {
+    Promise.all([
+      Book.remove(),
+      Author.remove(),
+    ]);
+  });
+
+  test('201 POST for succcesful posting of a book', () => {
     return createMockDataPromise()
       .then((mockData) => {
         const mockBook = {
@@ -31,7 +32,7 @@ describe('POST /api/read/book', () => {
         return superagent.post(apiUrl)
           .send(mockBook)
           .then((response) => {
-            expect(response.status).toEqual(200);
+            expect(response.status).toEqual(201);
             expect(response.body.title).toEqual(mockBook.title);
             expect(response.body.description).toEqual(mockBook.description);
             expect(response.body._id).toBeTruthy();
@@ -44,6 +45,13 @@ describe('POST /api/read/book', () => {
 });
 
 describe('GET /api/read/book/:id', () => {
+  beforeEach(() => {
+    Promise.all([
+      Book.remove(),
+      Author.remove(),
+    ]);
+  });
+
   test('200 GET for succesful fetching of a book', () => {
     let newBook;
     return createMockDataPromise()
@@ -62,6 +70,13 @@ describe('GET /api/read/book/:id', () => {
 });
 
 describe('PUT /api/read/book/:id', () => {
+  beforeEach(() => {
+    Promise.all([
+      Book.remove(),
+      Author.remove(),
+    ]);
+  });
+
   test('200 PUT for succesful updating of existing book', () => {
     let newBook;
     return createMockDataPromise()
@@ -80,6 +95,31 @@ describe('PUT /api/read/book/:id', () => {
       })
       .catch((err) => {
         throw err;
+      });
+  });
+});
+
+describe('DELETE /api/read/book/:id', () => {
+  let newBook;
+
+  test('200 (?) DELETE for succesfully deleting a book', () => {
+    return createMockDataPromise()
+      .then((mockData) => {
+        newBook = mockData.book;
+        return superagent.delete(`${apiUrl}/${newBook._id}`);
+      })
+      .then((result) => {
+        expect(result.status).toEqual(200);
+      });
+  });
+
+  test('404 DELETE for try to delete nonexistant book', () => {
+    return superagent.delete(`${apiUrl}/${newBook._id}`)
+      .then((result) => {
+        throw result; // shouldn't get here
+      })
+      .catch((err) => {
+        expect(err.status).toEqual(404);
       });
   });
 });

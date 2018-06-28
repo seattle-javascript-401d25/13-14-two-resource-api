@@ -31,6 +31,20 @@ describe('POST /api/make', () => {
         throw err;
       });
   });
+  // test('400 post: No name', () => {
+  //   return pCreateMockMake()
+  //     .then(() => {
+  //       const mockCarMake = {
+  //         // name: faker.name.firstName(),
+  //         country: faker.address.country(),
+  //       };
+  //       return superagent.post(apiUrl)
+  //         .send(mockCarMake)
+  //         .catch((err) => {
+  //           expect(err.status).toEqual(400);
+  //         });
+  //     });
+  // });
 });
 
 describe('GET /api/make', () => {
@@ -52,3 +66,44 @@ describe('GET /api/make', () => {
   });
 });
 
+describe('PUT request to /api/cars', () => {
+  test('200 PUT for successful update to a resource', () => {
+    return pCreateMockMake()
+      .then((newCarMake) => {
+        return superagent.put(`${apiUrl}/${newCarMake._id}`)
+          .send({ name: 'updated name', country: 'updated country' })
+          .then((response) => {
+            expect(response.status).toEqual(200);
+            expect(response.body.name).toEqual('updated name');
+            expect(response.body.country).toEqual('updated country');  
+            // expect(response.body._id.toString()).toEqual(mockData._id.toString());              
+          })
+          .catch((err) => {
+            throw err;
+          });
+      })
+      .catch((err) => {
+        throw err;
+      });
+  });
+
+  test('404 PUT: No car with this ID', () => {
+    return pCreateMockMake()
+      .then(() => {
+        return superagent.put(`${apiUrl}/12343452`)
+          .catch((err) => {
+            expect(err.status).toEqual(404);
+          });
+      });
+  });
+
+  test('400 PUT: No path', () => {
+    return superagent.put(`${apiUrl}`)
+      .then((response) => {
+        throw response;
+      })
+      .catch((err) => {
+        expect(err.status).toEqual(400);
+      });
+  });
+});

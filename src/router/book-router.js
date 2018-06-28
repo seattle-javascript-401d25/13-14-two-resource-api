@@ -27,7 +27,8 @@ bookRouter.get('/api/read/book/:id?', (request, response, next) => {
 
   Book.init()
     .then(() => {
-      return Book.findById(request.params.id);
+      return Book.findOne({ _id: request.params.id })
+        .populate('author');
     })
     .then((foundBook) => {
       logger.log(logger.INFO, `BOOK ROUTER: AFTER GETTING BOOK ${JSON.stringify(foundBook)}`);

@@ -21,25 +21,50 @@ describe('POST /api/read/book', () => {
   });
 
   test('201 POST for succcesful posting of a book', () => {
+    let mockBook;
+    console.log('>>>>>>> 1 >>>>>> calling createMockDataPromise');
     return createMockDataPromise()
       .then((mockData) => {
-        const mockBook = {
+        mockBook = {
           title: faker.lorem.words(3),
           description: faker.lorem.words(15),
           author: mockData.author._id,
         };
-
+        console.log('>>>>> 2 >>>>> making BOOK POST request with', JSON.stringify(mockBook, null, 2));
+        for (let i = 0; i < 100000000; i++) {}
         return superagent.post(apiUrl)
-          .send(mockBook)
-          .then((response) => {
-            expect(response.status).toEqual(201);
-            expect(response.body.title).toEqual(mockBook.title);
-            expect(response.body.description).toEqual(mockBook.description);
-            expect(response.body._id).toBeTruthy();
-          })
-          .catch((err) => {
-            throw err;
-          });
+          .send(mockBook);
+      })
+      .then((response) => {
+        console.log('>>>>>> 3 >>>> .then after BOOK POST', JSON.stringify(response.body, null, 2));
+        for (let i = 0; i < 100000000; i++) {}
+        expect(response.status).toEqual(201);
+        expect(response.body.title).toEqual(mockBook.title);
+        expect(response.body.description).toEqual(mockBook.description);
+        expect(response.body._id).toBeTruthy();
+        expect(response.body.author).toBeTruthy();
+        for (let i = 0; i < 100000000; i++) {}
+        console.log('>>>> 4 >>>>> finding POSTed BOOKs author', response.body.author.toString());
+        for (let i = 0; i < 100000000; i++) {}
+        return Author.findById(response.body.author).populate('authored');
+      })
+      .then((result) => {
+        for (let i = 0; i < 100000000; i++) {}
+        console.log('>>>>> 5 >>>>> POSTed BOOKs AUTHOR found:', JSON.stringify(result, null, 2));
+        for (let i = 0; i < 100000000; i++) {}
+        console.log('>>>> 6 >>>>> AUTHORS books:', JSON.stringify(result.authored, null, 2));
+        for (let i = 0; i < 100000000; i++) {}
+        console.log('>>>> 7 >>>>> finding AUTHORs book[0]', result.authored[0].toString());
+        for (let i = 0; i < 100000000; i++) {}
+        Book.findById(result.authored[0]);
+      })
+      .then((result) => {
+        for (let i = 0; i < 100000000; i++) {}
+        console.log('>>>>> 8 >>>>>> authors BOOK[0]', JSON.stringify(result, null, 2));
+        for (let i = 0; i < 100000000; i++) {}
+      })
+      .catch((err) => {
+        throw err;
       });
   });
 });

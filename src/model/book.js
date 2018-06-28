@@ -10,7 +10,7 @@ const bookSchema = mongoose.Schema({
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'authors',
+    ref: 'author',
     required: true,
   },
   description: {
@@ -55,4 +55,4 @@ bookSchema.post('save', (book) => {
 });
 
 const skipInit = process.env.NODE_ENV === 'development';
-export default mongoose.model('books', bookSchema, 'books', skipInit);
+export default mongoose.model('book', bookSchema, 'books', skipInit);

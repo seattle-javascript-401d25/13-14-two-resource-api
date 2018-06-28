@@ -14,7 +14,7 @@ const authorSchema = mongoose.Schema({
   },
   authored: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'books',
+    ref: 'book',
   }],
 }, { timestamps: true });
 
@@ -36,4 +36,4 @@ authorSchema.post('remove', (author) => {
 });
 
 const skipInit = process.env.NODE_ENV === 'development';
-export default mongoose.model('authors', authorSchema, 'authors', skipInit);
+export default mongoose.model('author', authorSchema, 'authors', skipInit);

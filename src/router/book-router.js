@@ -31,7 +31,7 @@ bookRouter.get('/api/read/book/:id?', (request, response, next) => {
     })
     .then((foundBook) => {
       logger.log(logger.INFO, `BOOK ROUTER: AFTER GETTING BOOK ${JSON.stringify(foundBook)}`);
-      return response.json(foundBook);
+      return response.status(200).json(foundBook);
     })
     .catch(next);
   return undefined;

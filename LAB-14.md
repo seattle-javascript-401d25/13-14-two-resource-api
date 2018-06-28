@@ -3,7 +3,7 @@
 
 ## Submission Instructions
 * Work in a new branch called `lab-14`
-* ** Keep your work as separate as possible from `lab-13`**
+* **Keep your work as separate as possible from `lab-13`**
 * Set up Travis CI on your repo
 * Deploy your app to Heroku 
 * Create a pull request from your lab branch branch to your master branch

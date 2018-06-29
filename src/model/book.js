@@ -7,6 +7,7 @@ const bookSchema = mongoose.Schema({
   title: {
     type: String,
     required: true,
+    unique: true,
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
@@ -30,10 +31,8 @@ bookSchema.pre('findOne', function preQueryHook(done) {
 });
 
 bookSchema.post('remove', (book, done) => {
-  console.log('.... BOOK post Remove', JSON.stringify(book, null, 2));
   Author.findById(book.author._id)
     .then((author) => {
-      console.log('.... AUTHOR in BOOK post remove', JSON.stringify(author, null, 2));
       author.authored = author.authored.filter(bId => bId !== book._id.toString());
       return author.save();
     })

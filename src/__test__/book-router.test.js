@@ -44,26 +44,6 @@ describe('POST /api/read/book', () => {
         throw err;
       });
   });
-
-  // test('409 POST for trying to create a book with duplicate title', () => {
-  //   return createMockDataPromise()
-  //     .then((mockData) => {
-  //       expect.assertions(1);
-  //       const mockBook = {
-  //         title: mockData.book.title,
-  //         description: faker.lorem.words(15),
-  //         author: mockData.author._id,
-  //       };
-  //       return superagent.post(apiUrl)
-  //         .send(mockBook);
-  //     })
-  //     .then((response) => {
-  //       throw response; // shouldn't get here
-  //     })
-  //     .catch((err) => {
-  //       expect(err.status).toEqual(409);
-  //     });
-  // });
 });
 
 describe('GET /api/read/book/:id', () => {

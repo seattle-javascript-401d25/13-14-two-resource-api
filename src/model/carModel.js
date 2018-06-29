@@ -23,7 +23,8 @@ const modelSchema = mongoose.Schema({
     ref: 'carMake',
   },
   _carMakeName: {
-    type: mongoose.Schema.Types.ObjectId.name,
+    default: 'test',
+    type: String,
     ref: 'carMake',
   },
 }, { timestamps: true });
@@ -53,4 +54,8 @@ const modelPostHook = (document, done) => {
 };
 
 modelSchema.pre('save', modelPreHook);
+// modelSchema.pre('findOne', function preHookCallback(done) {
+//   this.populate('_carMakeName');
+//   done();
+// });
 modelSchema.post('remove', modelPostHook);

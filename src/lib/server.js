@@ -2,9 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import logger from './logger';
-// import authorRouter from '../router/author-router';
-// import bookRouter from './../router/book-router';
-import modelRouter from '../router/model-router';
+import authorRouter from '../router/author-router';
+import bookRouter from './../router/book-router';
 
 // middleware
 import errorMiddleWare from '../lib/middleware/error-middleware';
@@ -21,13 +20,9 @@ app.use(express.json());
 
 // our own modules
 app.use(loggerMiddleware);
-// app.use(authorRouter);
-// app.use(bookRouter);
-// // our own modules
-// app.use(loggerMiddleware);
-app.use(modelRouter);
-// // app.use(classroomRouter);
-// // app.use(studentRouter);
+app.use(authorRouter);
+app.use(bookRouter);
+
 app.use(errorMiddleWare);
 
 // catch all

@@ -7,11 +7,10 @@ const bookSchema = mongoose.Schema({
   title: {
     type: String,
     required: true,
-    unique: true,
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'author',
+    ref: 'authors',
     required: true,
   },
   description: {
@@ -25,18 +24,18 @@ const bookSchema = mongoose.Schema({
   },
 }, { timestamps: true });
 
-bookSchema.pre('findOne', function preQueryHook(done) {
-  this.populate('author');
-  done();
-});
+// bookSchema.pre('findOne', function preQueryHook(done) {
+//   console.log('***** 1 ****** book findOne pree "this"', this);
+//   this.populate('authors');
+//   done();
+// });
 
-bookSchema.post('remove', (book, done) => {
-  Author.findById(book.author._id)
+bookSchema.post('remove', (book) => {
+  Author.findById(book.author)
     .then((author) => {
-      author.authored = author.authored.filter(bId => bId !== book._id.toString());
-      return author.save();
+      author.authored = author.authored.filter(bId => bId !== book._id);
+      author.save();
     })
-    .then(done())
     .catch((err) => {
       throw err;
     });
@@ -45,8 +44,14 @@ bookSchema.post('remove', (book, done) => {
 bookSchema.post('save', (book) => {
   Author.findById(book.author)
     .then((author) => {
+      console.log('----- 1 ----- entry to BOOK SAVE POST hook book', JSON.stringify(book, null, 2));
+      for (let i = 0; i < 100000000; i++) {}
       author.authored.push(book._id);
       return author.save();
+    })
+    .then((author) => {
+      console.log('---- 2 ---- author after save from BOOK SAVE POST hook', JSON.stringify(author, null, 2));
+      for (let i = 0; i < 100000000; i++) {}      
     })
     .catch((err) => {
       throw err;
@@ -54,4 +59,4 @@ bookSchema.post('save', (book) => {
 });
 
 const skipInit = process.env.NODE_ENV === 'development';
-export default mongoose.model('book', bookSchema, 'books', skipInit);
+export default mongoose.model('books', bookSchema, 'books', skipInit);

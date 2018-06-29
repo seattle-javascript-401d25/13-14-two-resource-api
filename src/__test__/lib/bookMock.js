@@ -15,10 +15,12 @@ export default () => {
         format: 'paperback',
         author: mockData.author._id,
       };
+      console.log('++++ 1 ++++ bookMock Saving', JSON.stringify(mockBook, null, 2));
       return new Book(mockBook).save();
     })
     .then((newBook) => {
       mockData.book = newBook;
+      console.log('+++++++ 2 +++++ bookMock mockData:', JSON.stringify(mockData, null, 2));
       return mockData;
     })
     .catch((err) => {

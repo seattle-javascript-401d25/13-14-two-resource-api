@@ -27,11 +27,11 @@ authorRouter.get('/api/read/author/:id?', (request, response, next) => {
   }
   Author.init()
     .then(() => {
-      return Author.findOne({ _id: request.params.id });
+      return Author.findOne({ _id: request.params.id }).populate('authored');
     })
     .then((foundAuthor) => {
       logger.log(logger.INFO, `AUTHOR ROUTER: FOUND THE MODEL, ${JSON.stringify(foundAuthor)}`);
-      return response.status(200).json(foundAuthor);
+      response.status(200).json(foundAuthor);
     })
     .catch(next);
   return undefined;

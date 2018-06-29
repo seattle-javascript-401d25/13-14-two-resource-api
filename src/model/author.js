@@ -14,14 +14,14 @@ const authorSchema = mongoose.Schema({
   },
   authored: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'book',
+    ref: 'books',
   }],
 }, { timestamps: true });
 
-authorSchema.pre('findOne', function preQueryHook(done) {
-  this.populate('authored');
-  done();
-});
+// authorSchema.pre('findOne', function preQueryHook(done) {
+//   this.populate('books', 'title');
+//   done();
+// });
 
 authorSchema.post('remove', (author) => {
   for (let i = 0; i < author.authored.length; i++) {
@@ -36,4 +36,4 @@ authorSchema.post('remove', (author) => {
 });
 
 const skipInit = process.env.NODE_ENV === 'development';
-export default mongoose.model('author', authorSchema, 'authors', skipInit);
+export default mongoose.model('authors', authorSchema, 'authors', skipInit);

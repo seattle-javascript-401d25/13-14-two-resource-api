@@ -21,47 +21,24 @@ describe('POST /api/read/book', () => {
   });
 
   test('201 POST for succcesful posting of a book', () => {
-    let mockBook;
-    console.log('>>>>>>> 1 >>>>>> calling createMockDataPromise');
-    return createMockDataPromise()
+    let mockBook;   
+    return createMockDataPromise()      
       .then((mockData) => {
+        expect.assertions(5);
         mockBook = {
           title: faker.lorem.words(3),
           description: faker.lorem.words(15),
           author: mockData.author._id,
         };
-        console.log('>>>>> 2 >>>>> making BOOK POST request with', JSON.stringify(mockBook, null, 2));
-        for (let i = 0; i < 100000000; i++) {}
         return superagent.post(apiUrl)
           .send(mockBook);
       })
       .then((response) => {
-        console.log('>>>>>> 3 >>>> .then after BOOK POST', JSON.stringify(response.body, null, 2));
-        for (let i = 0; i < 100000000; i++) {}
         expect(response.status).toEqual(201);
         expect(response.body.title).toEqual(mockBook.title);
         expect(response.body.description).toEqual(mockBook.description);
         expect(response.body._id).toBeTruthy();
-        expect(response.body.author).toBeTruthy();
-        for (let i = 0; i < 100000000; i++) {}
-        console.log('>>>> 4 >>>>> finding POSTed BOOKs author', response.body.author.toString());
-        for (let i = 0; i < 100000000; i++) {}
-        return Author.findById(response.body.author).populate('authored');
-      })
-      .then((result) => {
-        for (let i = 0; i < 100000000; i++) {}
-        console.log('>>>>> 5 >>>>> POSTed BOOKs AUTHOR found:', JSON.stringify(result, null, 2));
-        for (let i = 0; i < 100000000; i++) {}
-        console.log('>>>> 6 >>>>> AUTHORS books:', JSON.stringify(result.authored, null, 2));
-        for (let i = 0; i < 100000000; i++) {}
-        console.log('>>>> 7 >>>>> finding AUTHORs book[0]', result.authored[0].toString());
-        for (let i = 0; i < 100000000; i++) {}
-        Book.findById(result.authored[0]);
-      })
-      .then((result) => {
-        for (let i = 0; i < 100000000; i++) {}
-        console.log('>>>>> 8 >>>>>> authors BOOK[0]', JSON.stringify(result, null, 2));
-        for (let i = 0; i < 100000000; i++) {}
+        expect(response.body.author.toString()).toEqual(mockBook.author.toString());
       })
       .catch((err) => {
         throw err;
@@ -70,13 +47,6 @@ describe('POST /api/read/book', () => {
 });
 
 describe('GET /api/read/book/:id', () => {
-  beforeEach(() => {
-    Promise.all([
-      Book.remove(),
-      Author.remove(),
-    ]);
-  });
-
   test('200 GET for succesful fetching of a book', () => {
     let newBook;
     return createMockDataPromise()
@@ -92,16 +62,19 @@ describe('GET /api/read/book/:id', () => {
         throw err;
       });
   });
+
+  test('404 GET of non-existent book', () => {
+    return superagent.get(`${apiUrl}/12345`)
+      .then((result) => {
+        throw result; // shouldn't get here
+      })
+      .catch((err) => {
+        expect(err.status).toEqual(404);
+      });
+  });
 });
 
 describe('PUT /api/read/book/:id', () => {
-  beforeEach(() => {
-    Promise.all([
-      Book.remove(),
-      Author.remove(),
-    ]);
-  });
-
   test('200 PUT for succesful updating of existing book', () => {
     let newBook;
     return createMockDataPromise()

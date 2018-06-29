@@ -43,6 +43,8 @@ describe('POST /api/read/author', () => {
         expect(err.status).toEqual(400);
       });
   });
+
+  // can't do a 409 test on current implementation of authors because there's no unique requirement.  
 });
 
 describe('GET /api/read/author/:id', () => {

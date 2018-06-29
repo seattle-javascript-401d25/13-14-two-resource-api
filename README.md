@@ -1,61 +1,162 @@
 ![CF](https://camo.githubusercontent.com/70edab54bba80edb7493cad3135e9606781cbb6b/687474703a2f2f692e696d6775722e636f6d2f377635415363382e706e67) 13: Two-Resource Resource Mongo and Express API
 ===
 
-## Submission Instructions
-* Read this document entirely and estimate how long this assignment will take.
-* Work in a fork of this repository
-* Work in a branch on your fork called `lab-13`
-* Set up Travis CI to your forked repo
-* **A deployed Heroku URL is not due until Lab 14, but you should start working on deployment for this lab now** 
-* Create a pull request from your lab branch branch to your `master` branch
-* Open a pull request to this repository
-* Submit on canvas a question and observation,your original estimate, how long you spent, and a link to your pull request
+[![Build Status](https://travis-ci.org/TCW417/13-14-two-resource-api.svg?branch=master)](https://travis-ci.org/TCW417/13-14-two-resource-api)
 
+The BOOKS api provides an interface to a database of books and authors. Think of it as your personal reading list.  Books have, at a minimum, title and author ID, with an optional description. Authors have firstName and lastName properties as well as a database-maintained list of books they've authored.
 
-## Learning Objectives  
-* students will be able to work with the MongoDB database management system
-* students will understand the primary concepts of working with a NoSQL database management system
-* students will be able to create custom data models *(schemas)* through the use of mongoose.js using a clear one-to-many relationship
-* students will be able to use mongoose.js helper methods for interacting with their database persistence layer
+In order to create (POST) a book you must first have POSTed its author and recorded his/her author._id.
 
-## Requirements
+MongoDB is used to provide persistent storage for books data.
 
-#### Feature Tasks
-* create an HTTP Server using `express`
-* utilize all the new dependencies used in lecture
-* use the express `Router` to create a route for doing **RESTFUL CRUD** operations against your models
-* create a resource model of your choice (that is different from the lecture models) that uses `mongoose.Schema` and `mongoose.model`. This model should be something that would make sense as the *one* in your *one-to-many* data relationship, and will be considered a  *document* in the Mongo database. E.g., in lecture code, one classroom can have many students. 
-* create a resource model of your choice that makes sense as the *many* in your *one-to-many* data relationship. This will be considered a *subdocument* in the Mongo database.  
+## The API
 
-## Server Endpoints *this applies to BOTH of your models*
-### `/api/resource-name`
-* `POST` request
-  * should pass data as stringifed JSON in the body of a post request to create a new resource
+### POST api/read/author
 
-### `/api/resource-name/:id`
-* `GET` request
-  * should pass the id of a resource through the url endpoint to get a resource
-    * **this should use `req.params`, not querystring parameters**
-* `PUT` request
-  * should pass data as stringifed JSON in the body of a put request to overwrite a pre-existing resource
-* `DELETE` request
-  * should pass the id of a resource though the url endpoint to delete a resource
-    * **this should use `req.params`**
+Creates a new author and adds them to the database.
 
-### Tests
-* create a test that will ensure that your API returns a status code of 404 for routes that have not been registered
-* create a series of tests to ensure that your `/api/resource-name` endpoint responds as described for each condition below:
- * `GET` - test 200, returns a resource with a valid body
- * `GET` - test 404, respond with 'not found' for valid requests made with an id that was not found
- * `PUT` - test 200, returns a resource with an updated body
- * `PUT` - test 400, responds with 'bad request' if no request body was provided
- * `PUT` - test 404, responds with 'not found' for valid requests made with an id that was not found
- * `POST` - test 400, responds with 'bad request' if no request body was provided
- * `POST` - test 200, returns a resource for requests made with a valid body
- 
- ### Stretch Goals
- * Test your DELETE route for all success and error conditions
- * Test to ensure that if you remove a subdocument from your database, i.e. the *many* in your *one-to-many* data relationship, you have properly removed it from its parent document's array.
- * Try to implement a many-to-many relationship between your models or with a third model and test that code
- * If you use an `enum` property on your Mongoose schema, test for errors when trying to enter a value that isn't permitted on the schema
- * Research other cool things you can do with Mongoose by reading the docs and sharing your findings with the class!
+The body of the POST request should be a JSON string with the following information (for example):
+```
+{
+    "firstName":"Larry",
+    "lastName":"McMurtry"
+}
+```
+On success, the server will respond with an author document:
+```
+{
+    "authored": [],
+    "_id": "5b352191b266e84f67dafcf0",
+    "firstName": "Larry",
+    "lastName": "McMurtry",
+    "createdAt": "2018-06-28T17:57:37.719Z",
+    "updatedAt": "2018-06-29T00:01:53.477Z",
+    "__v": 5
+}
+```
+Save that _id as you'll need it in order to add Larry's books to the database.
+
+If the request body is missing either firstName or lastName properties a 400 status will be returned.
+
+### POST api/read/book
+
+Creates a new book and adds it to the database.
+
+This route requires a valid book object as a JSON string in the body of the message. For example:
+```
+{
+    "title":"Lonesome Dove",
+    "author":"5b352191b266e84f67dafcf0",
+    "description":"The description is optional, but Lonesome Dove is a great book!",
+    "format":"hardcover"
+}
+```
+Format may be one of "hardcover", "paperback" or "ebook".
+Returns status 200 and the full book object, including _id and createdOn properties, as JSON on success. For example:
+```
+{
+    "format": "hardcover",
+    "_id": "5b357bdbf8b7f86f1abb05ca",
+    "title": "Lonesome Dove",
+    "author": "5b352191b266e84f67dafcf0",
+    "createdAt": "2018-06-29T00:22:51.778Z",
+    "updatedAt": "2018-06-29T00:22:51.778Z",
+    "__v": 0
+}
+```
+Returns 400 if no title and/or author are provided. These are required values. Retures 409 if the book title already exists.
+
+### GET api/read/author[/id]
+### GET api/read/book[/id]
+
+Returns JSON string representing either a single book [author] if /id is provided or an array of books [authors] if no id is provided. If the database is empty returns an empty array.
+
+Sample return, single object from /book/:
+```
+{
+    "format": "hardcover",
+    "_id": "5b357bdbf8b7f86f1abb05ca",
+    "title": "Cadillac Jack",
+    "author": {
+        "authored": [
+            "5b3521afb266e84f67dafcf1",
+            "5b3521bab266e84f67dafcf3",
+            "5b357073c4dd7f6aca4c8ab1",
+            "5b35717e553f936b19dcc66c",
+            "5b3576f1d4e3a66d1c07f3c1",
+            "5b357bdbf8b7f86f1abb05ca"
+        ],
+        "_id": "5b352191b266e84f67dafcf0",
+        "firstName": "Larry",
+        "lastName": "McMurtry",
+        "createdAt": "2018-06-28T17:57:37.719Z",
+        "updatedAt": "2018-06-29T00:22:51.806Z",
+        "__v": 6
+    },
+    "createdAt": "2018-06-29T00:22:51.778Z",
+    "updatedAt": "2018-06-29T00:22:51.778Z",
+    "__v": 0
+}
+```
+Sample return from GET call to api/read/book with no id:
+```
+[
+    {
+        "format": "hardcover",
+        "_id": "5b35766bd4e3a66d1c07f3bd",
+        "title": "Lonesome Dove",
+        "author": "5b352191b266e84f67dafcf0",
+        "createdAt": "2018-06-28T23:59:39.603Z",
+        "updatedAt": "2018-06-28T23:59:39.603Z",
+        "__v": 0
+    },
+    {
+        "format": "hardcover",
+        "_id": "5b357bdbf8b7f86f1abb05ca",
+        "title": "Cadillac Jack",
+        "author": "5b352191b266e84f67dafcf0",
+        "createdAt": "2018-06-29T00:22:51.778Z",
+        "updatedAt": "2018-06-29T00:22:51.778Z",
+        "__v": 0
+    }
+]
+```
+Returns status 200 on success, 404 if book ID is not found.
+
+### PUT api/read/book/Id
+### PUT api/read/author/Id
+This route updates an existing book [author]. It requires a complete book [author] object as a JSON string as the message body, INCLUDING the _id property, as it will use that _id to locate the resource being updated.
+
+For example, if the following object is retrieved from a previous GET request to /api/read/book
+```
+{
+    "format": "hardcover",
+    "_id": "5b357bdbf8b7f86f1abb05ca",
+    "title": "Lonesome Dove",
+    "author": "5b352191b266e84f67dafcf0",
+    "createdAt": "2018-06-29T00:22:51.778Z",
+    "updatedAt": "2018-06-29T00:22:51.778Z",
+    "__v": 0
+}
+```
+and then modified like this
+```
+{
+    "_id": "5b318dc655a74c8526bbffe9",
+    "title": "Lonesome Dove",
+    "author": "Larry McMurtry",
+    "description": "THE BEST BOOK EVER. SERIOUSLY, OF ALL TIME!!!! At least the best western ever.",
+    "__v": 0
+},
+```
+the PUT call will succeed and return status 200 with the updated book object as the body of the reply.
+
+If the id isn't found, status 404 will be returned. 400 will be return if id is missing, if body is empty or if properties are in the request body that aren't in the Book schema (title, author, description).  Will return 409 if the title isn't unique.
+
+### DELETE api/read/book/Id
+### DELETE api/read/author/Id
+Deletes the book with the given Id. The Id would typically be taken from a previous GET call.  
+
+On success, returns staus 204.
+
+400 is returned if the book Id is not provided, 404 if the Id is not found.

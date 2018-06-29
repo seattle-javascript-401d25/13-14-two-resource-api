@@ -23,7 +23,17 @@ modelRouter.post('/api/read/:model', (request, response, next) => {
 
 modelRouter.get('/api/read/:model/:id?', (request, response, next) => {
   if (!request.params.id) {
-    return next(new HttpErrors(400, `No ${request.model} id entered`));
+    // return next(new HttpErrors(400, `No ${request.model} id entered`));
+    const Model = request.model;
+    Model.init()
+      .then(() => {
+        return Model.find();
+      })
+      .then((foundModel) => {
+        logger.log(logger.INFO, `MODEL-ROUTER: FOUND THE MODEL ${JSON.stringify(foundModel)}`);
+        return response.status(200).json(foundModel);
+      })
+      .catch(next);
   }
   const Model = request.model;
   Model.init()
